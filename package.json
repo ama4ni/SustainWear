@@ -1,0 +1,14 @@
+{
+  "name": "sustainwear-1",
+  "version": "1.0.0",
+  "description": "SustainWear Node.js app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "connect-flash": "^0.1.1"
+  }
+}

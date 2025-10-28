@@ -1,0 +1,98 @@
+login
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SustainWear — Login</title>
+    <meta name="description" content="Login to SustainWear to donate, manage donations and track sustainability impact">
+    
+    <script>
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const btn = document.getElementById('pwToggle');
+            if (pw.type === 'password') { pw.type = 'text'; btn.textContent = 'Hide'; }
+            else { pw.type = 'password'; btn.textContent = 'Show'; }
+        }
+        function validateForm(e){
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            let valid = true;
+            if (!email.value || !email.value.includes('@')){ valid = false; email.setAttribute('aria-invalid','true'); }
+            else { email.removeAttribute('aria-invalid'); }
+            if (!password.value || password.value.length < 6){ valid = false; password.setAttribute('aria-invalid','true'); }
+            else { password.removeAttribute('aria-invalid'); }
+            if (!valid){ e.preventDefault(); document.getElementById('clientError').textContent = 'Please enter a valid email and password (min 6 chars).'; document.getElementById('clientError').style.display='block'; }
+        }
+        document.addEventListener('DOMContentLoaded',()=>{
+            const form = document.getElementById('loginForm');
+            if(form) form.addEventListener('submit', validateForm);
+        });
+    </script>
+</head>
+<body>
+    <main class="login-card" role="main" aria-labelledby="loginTitle">
+        <div class="brand">
+            <div class="logo">SW</div>
+            <div>
+                <h1 id="loginTitle">SustainWear</h1>
+                <p class="lead">Smart clothes donation — donate, track, and measure impact</p>
+            </div>
+        </div>
+
+        <div class="messages" aria-live="polite">
+            <% if (success && success.length > 0) { %>
+                <div class="msg-success"><%- success[0] %></div>
+            <% } %>
+            <% if (message) { %>
+                <div class="msg-error"><%- message %></div>
+            <% } %>
+            <% if (errors && errors.length) { %>
+                <% errors.forEach(function(err){ %>
+                    <div class="msg-error"><%- err.msg || err %></div>
+                <% }) %>
+            <% } %>
+            <div id="clientError" class="msg-error" style="display:none"></div>
+        </div>
+
+        <form id="loginForm" action="/login" method="POST" novalidate>
+            <% if (typeof csrfToken !== 'undefined') { %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% } %>
+
+            <div class="form-row">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@email.com" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>" />
+            </div>
+
+            <div class="form-row">
+                <label for="password">Password</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                    <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Enter your password" />
+                    <button type="button" id="pwToggle" class="pw-toggle" onclick="togglePassword()">Show</button>
+                </div>
+            </div>
+
+            <div class="form-row row-between">
+                <label class="small"><input type="checkbox" name="remember" <%= (typeof formData !== 'undefined' && formData.remember) ? 'checked' : '' %> /> Remember me</label>
+            </div>
+
+            <div class="actions">
+                <button class="primary" type="submit">Sign in</button>
+                <a class="text-link small" href="/forgotpassword">Forgot?</a>
+            </div>
+        </form>
+
+        <div class="gdpr">
+            <p class="small">By signing in you agree to our <a href="/privacy" class="small">Privacy Policy</a> and terms. We only use personal data to operate the platform and improve sustainability outcomes. For GDPR requests, contact <a href="mailto:privacy@sustainwear.example">privacy@sustainwear.example</a>.</p>
+        </div>
+
+        <div style="margin-top:1rem;text-align:center">
+            <p class="small">New to SustainWear? <a href="<%= signupLink || '/signup' %>">Create an account</a></p>
+        </div>
+    </main>
+</body>
+</html>
+
+
