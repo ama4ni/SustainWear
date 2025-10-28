@@ -34,6 +34,11 @@ app.get('/login', (req, res) => {
 	res.render('login', { success, message, errors, signupLink });
 });
 
+app.get('/signup', (req, res) => {
+	const message = req.flash('message')?.[0] || '';
+	res.render('signup', { message, formData: {}, csrfToken: '' });
+});
+
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SustainWear — Register</title>
+    <meta name="description" content="Create a SustainWear account to donate clothes, manage inventory, and monitor sustainability impact">
+</head>
+<body>
+    <main class="form-container" role="main" aria-labelledby="registerTitle">
+        <h1 id="registerTitle">Create an account</h1>
+        <p class="subtitle">Join SustainWear — donate clothes, help communities and reduce waste</p>
+
+        <% if (typeof message !== 'undefined' && message && String(message).trim().length > 0) { %>
+            <p class="error-message" role="alert"><%- message %></p>
+        <% } %>
+
+        <form id="registerForm" action="/register" method="POST" novalidate>
+            <% if (typeof csrfToken !== 'undefined') { %>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <% } %>
+
+            <div class="form-group">
+                <label for="name">Full name</label>
+                <input id="name" name="name" type="text" placeholder="Your full name" value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" placeholder="you@email.com" autocomplete="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select id="role" name="role">
+                    <option value="donor" <%= (typeof formData !== 'undefined' && formData.role === 'donor') ? 'selected' : '' %>>Donor</option>
+                    <option value="charity" <%= (typeof formData !== 'undefined' && formData.role === 'charity') ? 'selected' : '' %>>Charity Staff</option>
+                    <option value="admin" <%= (typeof formData !== 'undefined' && formData.role === 'admin') ? 'selected' : '' %>>Administrator</option>
+                </select>
+            </div>
+
+            <div class="actions">
+                <button class="submit" type="submit">Register</button>
+            </div>
+        </form>
+
+        <p class="center">Already have an account? <a href="/login">Sign in</a></p>
+
+        <div class="gdpr" style="margin-top:1rem;font-size:0.85rem;color:var(--muted)">
+            By registering you agree to our <a href="/privacy">Privacy Policy</a>. For GDPR requests contact <a href="mailto:privacy@sustainwear.example">privacy@sustainwear.example</a>.
+        </div>
+
+    </main>
+
+    <div id="pwModal" class="modal-backdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <h2 id="modalTitle">Passwords do not match</h2>
+            <p>Please make sure both password fields match before continuing.</p>
+            <button id="pwModalClose" class="btn">OK</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('registerForm');
+            var pw = document.getElementById('password');
+            var cpw = document.getElementById('confirmPassword');
+            var modal = document.getElementById('pwModal');
+            var modalClose = document.getElementById('pwModalClose');
+
+            function showModal() {
+                modal.style.display = 'flex';
+                modal.setAttribute('aria-hidden', 'false');
+                modalClose.focus();
+            }
+
+            function hideModal() {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            modalClose.addEventListener('click', hideModal);
+
+            form.addEventListener('submit', function (e) {
+                if (pw.value !== cpw.value) {
+                    e.preventDefault();
+                    showModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
