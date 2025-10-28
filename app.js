@@ -39,6 +39,11 @@ app.get('/signup', (req, res) => {
 	res.render('signup', { message, formData: {}, csrfToken: '' });
 });
 
+app.get('/forgotpassword', (req, res) => {
+	const success = req.flash('success') || [];
+	const message = req.flash('message')?.[0] || '';
+	res.render('forgotpassword', { success, message });
+});
 
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
